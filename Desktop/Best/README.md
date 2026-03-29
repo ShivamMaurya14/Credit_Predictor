@@ -210,9 +210,10 @@ FP (False):    127,598  |  TN (Correct): 155,088
 ```
 .
 ├── README.md                                # This file
-├── HACKATHON_CREDIT_SCORING.ipynb          # Main analysis notebook
-├── application_train.csv                   # Training dataset (307,511 records)
-├── application_test.csv                    # Test dataset (48,744 records)
+├── notebook.ipynb                          # Main analysis notebook
+├── datasets/                               # Kaggle competition datasets
+│   ├── application_train.csv              # Training dataset (307,511 records)
+│   └── application_test.csv               # Test dataset (48,744 records)
 ├── model_optimization_results.csv          # Model performance comparison
 ├── model_optimization_final_comparison.png # Visualization charts
 ├── models/                                 # Trained models directory
@@ -226,14 +227,53 @@ FP (False):    127,598  |  TN (Correct): 155,088
 │   └── feature_names.json                 # Feature list for inference
 ├── .gitignore                              # Git ignore configuration
 ├── requirements.txt                        # Python dependencies
-└── DEPLOYMENT_GUIDE.md                    # Model deployment instructions
+├── DEPLOYMENT_GUIDE.md                    # Model deployment instructions
+├── ARCHITECTURE.md                        # Technical architecture & design
+├── LICENSE                                # MIT License
+└── .gitignore                             # Git ignore configuration
 ```
 
 ---
 
 ## 🚀 QUICK START GUIDE
 
-### Installation
+### Prerequisites
+
+- Python 3.8+
+- Kaggle account (free) for dataset download
+- ~2GB disk space for datasets & models
+
+### 1. Download Dataset from Kaggle
+
+This project uses the **Home Credit Default Risk** competition dataset.
+
+**Option A: Using Kaggle CLI (Recommended)**
+
+```bash
+# Install Kaggle CLI
+pip install kaggle
+
+# Download dataset (requires Kaggle API key)
+kaggle competitions download -c home-credit-default-risk
+
+# Extract and organize into datasets folder
+mkdir -p datasets
+unzip home-credit-default-risk.zip -d datasets/
+```
+
+**Option B: Manual Download**
+
+1. Visit: https://www.kaggle.com/c/home-credit-default-risk/data
+2. Download `application_train.csv` and `application_test.csv`
+3. Place files in `datasets/` folder
+
+**Dataset Details:**
+- **Kaggle Competition**: [Home Credit Default Risk](https://www.kaggle.com/c/home-credit-default-risk)
+- **Files Needed**:
+  - `application_train.csv` (~300 MB, 307,511 records)
+  - `application_test.csv` (~50 MB, 48,744 records)
+
+### 2. Setup Environment & Install Dependencies
 
 ```bash
 # Clone repository
@@ -315,6 +355,8 @@ The project generates a comprehensive comparison visualization showing:
 4. **Loss Prevention vs Opportunity Cost** - Trade-off analysis
 
 ![Model Optimization Comparison](model_optimization_final_comparison.png)
+
+*Generated during notebook execution and saved in the project root*
 
 ---
 
@@ -439,6 +481,23 @@ For questions about:
 
 ---
 
+---
+
+## 📚 Dataset Source
+
+**Competition**: [Home Credit Default Risk (Kaggle)](https://www.kaggle.com/c/home-credit-default-risk)
+
+**Citation**: 
+```
+Home Credit Group. (2018). Home Credit Default Risk. 
+Retrieved from https://www.kaggle.com/c/home-credit-default-risk
+```
+
+**Usage**: Academic & personal projects (subject to Kaggle competition rules)
+
+---
+
 **Last Updated**: March 29, 2026
+**Dataset**: Kaggle Home Credit Default Risk Competition
 **Submission**: Hackathon Credit Scoring Challenge
 **Status**: ✅ Production Ready
