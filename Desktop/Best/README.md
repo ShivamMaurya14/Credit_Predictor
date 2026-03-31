@@ -1,8 +1,9 @@
-# 🏆 Credit Default Prediction
+# 🏆 Credit Default Prediction (Detection Rate **91.5%**)
 
 **Alternate Credit Scoring System for Unbanked Users Using Machine Learning**
 
 An advanced machine learning solution that predicts credit default risk for unbanked and thin-file users using the Home Credit dataset with over 307,000 applications.
+
 
 ---
 
@@ -268,6 +269,7 @@ unzip home-credit-default-risk.zip -d datasets/
 3. Place files in `datasets/` folder
 
 **Dataset Details:**
+
 - **Kaggle Competition**: [Home Credit Default Risk](https://www.kaggle.com/c/home-credit-default-risk)
 - **Files Needed**:
   - `application_train.csv` (~300 MB, 307,511 records)
@@ -487,7 +489,8 @@ For questions about:
 
 **Competition**: [Home Credit Default Risk (Kaggle)](https://www.kaggle.com/c/home-credit-default-risk)
 
-**Citation**: 
+**Citation**:
+
 ```
 Home Credit Group. (2018). Home Credit Default Risk. 
 Retrieved from https://www.kaggle.com/c/home-credit-default-risk
