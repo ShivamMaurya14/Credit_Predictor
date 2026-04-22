@@ -83,3 +83,6 @@ models/*.pkl
 # LFS files (if needed)
 .git/info/attributes
 .venv
+
+# Allow the small sample test file for GitHub/Vercel
+!datasets/test.csv
