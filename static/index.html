@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreditGuard - Risk Assessment Dashboard</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Premium Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="logo-text">CreditGuard <span>Pro</span></div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main</div>
+            <a href="#" class="nav-item active"><i class="fa-solid fa-chart-line"></i> New Assessment</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-folder-open"></i> Portfolio</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> Customers</a>
+            
+            <div class="nav-label mt-4">Analytics</div>
+            <a href="#" class="nav-item"><i class="fa-solid fa-server"></i> Model Performance</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Default Reports</a>
+        </nav>
+
+        <div class="sidebar-policy">
+            <h4 class="nav-label">Policy Configuration</h4>
+            <div class="policy-card">
+                <div class="policy-row">
+                    <label>Risk Threshold</label>
+                    <span id="threshold-val">40%</span>
+                </div>
+                <input type="range" id="policy-threshold" min="5" max="60" value="40" class="rating-slider">
+                <p class="policy-hint">Maximum default probability for approval.</p>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Underwriter+AI&background=3b82f6&color=fff" alt="User">
+                <div class="user-info">
+                    <span class="user-name">Risk Analyst</span>
+                    <span class="user-role">System Admin</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="topbar">
+            <div class="search-bar" id="search-container">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="applicant-search" placeholder="Search user by application no.">
+            </div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-solid fa-bell"></i><span class="badge">3</span></button>
+                <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </header>
+
+        <div class="dashboard-container" id="new-assessment-view">
+            <div class="page-header">
+                <div>
+                    <h1>Risk Assessment Engine</h1>
+                    <p>Enter applicant parameters to run the Random Forest predictive model.</p>
+                </div>
+                <div class="header-actions">
+                    <input type="file" id="csv-upload-input" accept=".csv" style="display: none;">
+                    <button class="btn-secondary" id="bulk-upload-btn"><i class="fa-solid fa-upload"></i> Bulk Upload CSV</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Data Input Column -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <h3>Applicant Parameters</h3>
+                        <span class="status-badge">Awaiting Input</span>
+                    </div>
+
+                    <form id="prediction-form">
+                        <!-- Section: Financial -->
+                        <div class="form-section">
+                            <h4 class="section-title"><i class="fa-solid fa-wallet"></i> Financial Profile</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Total Annual Income</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-dollar-sign"></i>
+                                        <input type="number" name="AMT_INCOME_TOTAL" required placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Requested Credit Amount</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-money-check-dollar"></i>
+                                        <input type="number" name="AMT_CREDIT" required placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Loan Annuity</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                        <input type="number" name="AMT_ANNUITY" required placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Collateral / Goods Value</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-box-open"></i>
+                                        <input type="number" name="AMT_GOODS_PRICE" required placeholder="0.00">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section: External Ratings (NEW) -->
+                        <div class="form-section">
+                            <h4 class="section-title"><i class="fa-solid fa-gauge-high"></i> External Risk Ratings</h4>
+                            <div class="range-grid">
+                                <div class="range-group">
+                                    <div class="range-label-row">
+                                        <label>Bureau Score Alpha</label>
+                                        <span id="val-ext1">50</span>
+                                    </div>
+                                    <input type="range" name="EXT_SOURCE_1" min="0" max="100" value="50" class="rating-slider">
+                                </div>
+                                <div class="range-group">
+                                    <div class="range-label-row">
+                                        <label>Bureau Score Beta</label>
+                                        <span id="val-ext2">50</span>
+                                    </div>
+                                    <input type="range" name="EXT_SOURCE_2" min="0" max="100" value="50" class="rating-slider">
+                                </div>
+                                <div class="range-group">
+                                    <div class="range-label-row">
+                                        <label>Bureau Score Gamma</label>
+                                        <span id="val-ext3">50</span>
+                                    </div>
+                                    <input type="range" name="EXT_SOURCE_3" min="0" max="100" value="50" class="rating-slider">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section: Personal -->
+                        <div class="form-section">
+                            <h4 class="section-title"><i class="fa-solid fa-id-card"></i> Demographics & Employment</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Age (Years)</label>
+                                    <input type="number" name="AGE_YEARS" required placeholder="e.g. 35" min="18">
+                                </div>
+                                <div class="input-group">
+                                    <label>Years Employed</label>
+                                    <input type="number" name="YEARS_EMPLOYED" required step="0.1" placeholder="e.g. 5.5">
+                                </div>
+                                <div class="input-group">
+                                    <label>Dependents (Children)</label>
+                                    <input type="number" name="CNT_CHILDREN" required placeholder="0" min="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>Gender</label>
+                                    <select name="CODE_GENDER" required>
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="0">Female</option>
+                                        <option value="1">Male</option>
+                                    </select>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label>Highest Education</label>
+                                    <select name="NAME_EDUCATION_TYPE" required>
+                                        <option value="" disabled selected>Select education level...</option>
+                                        <option value="4">Secondary / Secondary special</option>
+                                        <option value="1">Higher education</option>
+                                        <option value="2">Incomplete higher</option>
+                                        <option value="3">Lower secondary</option>
+                                        <option value="0">Academic degree</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section: Assets -->
+                        <div class="form-section">
+                            <h4 class="section-title"><i class="fa-solid fa-building-columns"></i> Asset Declaration</h4>
+                            <div class="toggle-grid">
+                                <label class="toggle-switch">
+                                    <div class="toggle-info">
+                                        <span class="toggle-title">Owns Vehicle</span>
+                                        <span class="toggle-desc">Registered vehicle under applicant's name</span>
+                                    </div>
+                                    <div class="switch">
+                                        <input type="checkbox" name="FLAG_OWN_CAR" value="1">
+                                        <span class="slider"></span>
+                                    </div>
+                                </label>
+                                <label class="toggle-switch">
+                                    <div class="toggle-info">
+                                        <span class="toggle-title">Owns Real Estate</span>
+                                        <span class="toggle-desc">Property or land ownership</span>
+                                    </div>
+                                    <div class="switch">
+                                        <input type="checkbox" name="FLAG_OWN_REALTY" value="1">
+                                        <span class="slider"></span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Section: Live Metrics (NEW) -->
+                        <div class="live-metrics-bar">
+                            <div class="metric">
+                                <span class="m-label">DTI Ratio</span>
+                                <span class="m-value" id="live-dti">0.0%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="m-label">LTV Ratio</span>
+                                <span class="m-value" id="live-ltv">0.0%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="m-label">Est. Installment</span>
+                                <span class="m-value" id="live-annuity">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <div style="display: flex; gap: 1rem;">
+                                <button type="submit" class="btn-primary" id="submit-btn">
+                                    <i class="fa-solid fa-microchip"></i>
+                                    <span>Run AI Assessment</span>
+                                </button>
+                                <button type="button" class="btn-secondary" id="reset-form-btn" style="width: auto;">
+                                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Column -->
+                <div class="results-card" id="results-panel">
+                    <div class="card-header">
+                        <h3>Analysis Output</h3>
+                        <div class="model-badge">Random Forest v1.0</div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="results-state empty-state" id="results-empty">
+                        <div class="placeholder-icon">
+                            <i class="fa-solid fa-radar"></i>
+                        </div>
+                        <h4>Awaiting Data</h4>
+                        <p>Submit applicant parameters to generate risk prediction and actionable insights.</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="results-state loading-state hidden" id="results-loading">
+                        <div class="loader-ring"></div>
+                        <h4>Processing Data Vector</h4>
+                        <p>Mapping 125 features & executing inference...</p>
+                    </div>
+
+                    <!-- Success State -->
+                    <div class="results-content hidden" id="results-content">
+                        <!-- Risk Score Gauge -->
+                        <div class="score-container">
+                            <div class="gauge-wrapper">
+                                <svg viewBox="0 0 100 50" class="gauge">
+                                    <path class="gauge-bg" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" />
+                                    <path class="gauge-fill" id="gauge-fill" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke-dasharray="125.6" stroke-dashoffset="125.6" />
+                                </svg>
+                                <div class="gauge-content">
+                                    <span class="prob-value" id="prob-value">0.0%</span>
+                                    <span class="prob-label">Default Prob.</span>
+                                </div>
+                            </div>
+                            
+                            <div class="decision-box" id="decision-box">
+                                <i class="fa-solid fa-shield-check" id="decision-icon"></i>
+                                <div class="decision-text">
+                                    <span class="decision-title" id="decision-title">APPROVED</span>
+                                    <span class="decision-subtitle" id="decision-subtitle">Low Risk Profile</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Metrics -->
+                        <div class="metrics-grid">
+                            <div class="metric-box">
+                                <span class="metric-label">Model Threshold</span>
+                                <span class="metric-val">40.0%</span>
+                            </div>
+                            <div class="metric-box">
+                                <span class="metric-label">Confidence</span>
+                                <span class="metric-val text-green">High</span>
+                            </div>
+                            <div class="metric-box">
+                                <span class="metric-label">Latency</span>
+                                <span class="metric-val">42ms</span>
+                            </div>
+                        </div>
+
+                        <!-- AI Insights -->
+                        <div class="insights-container">
+                            <h4><i class="fa-solid fa-wand-magic-sparkles"></i> AI Explainability</h4>
+                            <ul class="insights-list" id="insights-list">
+                                <!-- Populated by JS -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio History View (Hidden by default) -->
+        <div class="dashboard-container hidden" id="portfolio-view">
+            <div class="page-header">
+                <div>
+                    <h1>Assessment History</h1>
+                    <p>Comprehensive audit log of all risk predictions processed by the system.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="refresh-history"><i class="fa-solid fa-rotate"></i> Refresh Log</button>
+                </div>
+            </div>
+
+            <!-- Analytics Summary Bar (NEW) -->
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--accent-blue-glow); color: var(--accent-blue);">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Processed</span>
+                        <h2 id="stat-total">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--success-bg); color: var(--success);">
+                        <i class="fa-solid fa-check-double"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Approval Rate</span>
+                        <h2 id="stat-approval">0%</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--danger-bg); color: var(--danger);">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Avg. Portfolio Risk</span>
+                        <h2 id="stat-risk">0%</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="history-table-wrapper">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>App ID</th>
+                                <th>Income</th>
+                                <th>Credit</th>
+                                <th>Risk Score</th>
+                                <th>Decision</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
