@@ -18,10 +18,11 @@
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────┐
-│        FEATURE ENGINEERING LAYER (124 features)        │
+│        FEATURE ENGINEERING LAYER (125 features)        │
 │  • Credit-to-Income ratio                              │
 │  • Annuity-to-Income ratio                            │
 │  • Credit term metrics                                 │
+│  • DAYS_EMPLOYED_PERCENT (Employment stability)        │
 │  • Per capita income                                   │
 │  • 10+ additional domain features                      │
 │  • Removed 15 highly correlated features               │
@@ -31,8 +32,8 @@
 ┌─────────────────────────────────────────────────────────┐
 │           FEATURE SCALING LAYER                         │
 │        (RobustScaler - resistant to outliers)          │
-│        • Applied to all 124 features                   │
-│        • Saved in: feature_scaler.joblib              │
+│        • Applied to all 125 features                   │
+│        • Saved in: calibration_params.json             │
 └──────────────────────┬──────────────────────────────────┘
                        │
          ┌─────────────┼─────────────┐
@@ -82,7 +83,7 @@ RandomForestClassifier(
 
 **Training:**
 - Training samples: 307,511
-- Features: 124
+- Features: 125
 - Classes: 2 (default/non-default)
 - Training time: ~5-10 minutes on standard hardware
 - ROC-AUC achieved: 0.8866
@@ -191,12 +192,15 @@ CREDIT_TERM = AMT_ANNUITY / (AMT_CREDIT + 1)
 
 INCOME_PER_PERSON = AMT_INCOME_TOTAL / max(CNT_FAM_MEMBERS, 1)
     ↳ Per capita household income
+
+DAYS_EMPLOYED_PERCENT = DAYS_EMPLOYED / (DAYS_BIRTH + 1)
+    ↳ Employment stability relative to age
 ```
 
 **Feature Selection:**
-- Initial features: 140 (after encoding + engineering)
+- Initial features: 141 (after encoding + engineering)
 - Removed: 15 highly correlated features (r > 0.95)
-- Final features: 124 (optimal balance)
+- Final features: 125 (optimal balance)
 
 ### 4. Robust Scaling
 
@@ -373,6 +377,6 @@ Training Pipeline:
 
 ---
 
-**Architecture Last Updated**: March 29, 2026
+**Architecture Last Updated**: April 22, 2026
 **Complexity**: Production-Ready
 **Scalability**: For 300k+ daily predictions
