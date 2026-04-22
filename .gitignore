@@ -3,13 +3,6 @@
 application_train.csv
 application_test.csv
 
-# Large model files (keep only metadata)
-*.joblib
-*.pkl
-*.pickle
-*.h5
-*.db
-
 # Python
 __pycache__/
 *.py[cod]
@@ -75,10 +68,6 @@ Thumbs.db
 *.png
 *.jpg
 model_optimization_results.csv
-
-# Specific exclusions for large model artifacts
-models/*.joblib
-models/*.pkl
 
 # LFS files (if needed)
 .git/info/attributes
