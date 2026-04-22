@@ -163,12 +163,17 @@ def load_csv_to_db(df):
     
     print(f"Loaded {len(applicants_db)} applicants with fully calculated 125-feature profiles")
 
-# Try to load existing dataset on startup
+# Try to load existing dataset on startup (Skipped if file too large or missing for serverless)
 DEFAULT_CSV = "datasets/test.csv"
 if os.path.exists(DEFAULT_CSV):
     try:
-        df_init = pd.read_csv(DEFAULT_CSV)
-        load_csv_to_db(df_init)
+        # Check size - if > 50MB, skip in serverless environments to prevent timeouts
+        file_size = os.path.getsize(DEFAULT_CSV) / (1024 * 1024)
+        if file_size < 50:
+            df_init = pd.read_csv(DEFAULT_CSV)
+            load_csv_to_db(df_init)
+        else:
+            print(f"⏩ Skipping large dataset {DEFAULT_CSV} ({file_size:.1f}MB) for serverless performance")
     except Exception as e:
         print(f"Error loading {DEFAULT_CSV}: {e}")
 
